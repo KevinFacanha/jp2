@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Consulte os detalhes do passeio e confirme a disponibilidade com o Imperador do Turismo." />
+    <title>Detalhes do passeio | Imperador do Turismo</title>
+    <link rel="icon" type="image/png" href="assets/logo-imperador-fiel.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="detalhes.css" />
+  </head>
+  <body>
+    <header class="detail-header">
+      <div class="detail-header-inner">
+        <a class="detail-brand" href="index.html" aria-label="Imperador do Turismo, página inicial">
+          <img src="assets/logo-imperador-fiel.png" alt="Imperador do Turismo" />
+        </a>
+        <a class="back-link" href="index.html#passeios">Voltar para os passeios</a>
+      </div>
+    </header>
+
+    <main class="detail-page">
+      <div class="detail-layout">
+        <div class="detail-content">
+          <section class="gallery-card" aria-label="Galeria do passeio">
+            <div class="gallery-main">
+              <img id="detail-main-image" src="" alt="" />
+            </div>
+            <div class="gallery-thumbnails">
+              <button class="gallery-thumb is-active" type="button" data-image-index="0" aria-label="Ver primeira imagem">
+                <img id="detail-thumb-0" src="" alt="" />
+              </button>
+              <button class="gallery-thumb" type="button" data-image-index="1" aria-label="Ver segunda imagem">
+                <img id="detail-thumb-1" src="" alt="" />
+              </button>
+              <button class="gallery-thumb" type="button" data-image-index="2" aria-label="Ver terceira imagem">
+                <img id="detail-thumb-2" src="" alt="" />
+              </button>
+            </div>
+          </section>
+
+          <article class="information-card">
+            <p class="eyebrow" id="tour-category"></p>
+            <h1 id="tour-name"></h1>
+
+            <div class="tour-facts" aria-label="Informações do passeio">
+              <div class="tour-fact">
+                <span>Localização</span>
+                <strong id="tour-location"></strong>
+              </div>
+              <div class="tour-fact">
+                <span>Duração</span>
+                <strong id="tour-duration"></strong>
+              </div>
+              <div class="tour-fact">
+                <span>Preço</span>
+                <strong id="tour-price"></strong>
+              </div>
+            </div>
+
+            <div class="content-block">
+              <h2>Sobre o passeio</h2>
+              <p id="tour-description"></p>
+            </div>
+
+            <div class="content-block how-it-works">
+              <p class="eyebrow">Planejamento simples</p>
+              <h2>Como funciona o passeio</h2>
+              <p>Escolha a data e informe a quantidade de passageiros. Ao confirmar pelo WhatsApp, nossa equipe verificará a disponibilidade e informará o roteiro, os horários e todas as orientações antes da reserva.</p>
+              <ol>
+                <li><span>01</span><div><strong>Escolha a data</strong><p>Informe o dia desejado para consultar a disponibilidade.</p></div></li>
+                <li><span>02</span><div><strong>Adicione os passageiros</strong><p>Selecione a quantidade de adultos, crianças e bebês.</p></div></li>
+                <li><span>03</span><div><strong>Confirme pelo WhatsApp</strong><p>Envie os dados para receber a orientação da equipe.</p></div></li>
+              </ol>
+            </div>
+          </article>
+        </div>
+
+        <aside class="booking-panel" aria-labelledby="booking-title">
+          <p class="eyebrow">Solicite sua reserva</p>
+          <h2 id="booking-title">Organize seu passeio</h2>
+          <div class="booking-price">
+            <span>Valor informado</span>
+            <strong id="booking-tour-price"></strong>
+          </div>
+
+          <form id="booking-form" novalidate>
+            <label class="date-field" for="tour-date">
+              <span>Data do passeio</span>
+              <input id="tour-date" name="date" type="date" required />
+            </label>
+
+            <fieldset class="passenger-fieldset">
+              <legend>Passageiros</legend>
+
+              <div class="passenger-row">
+                <div><strong>Adultos</strong><small>12 anos ou mais</small></div>
+                <div class="counter" aria-label="Quantidade de adultos">
+                  <button type="button" data-action="decrement" data-passenger="adults" aria-label="Diminuir adultos">−</button>
+                  <output id="adults-count" aria-live="polite">1</output>
+                  <button type="button" data-action="increment" data-passenger="adults" aria-label="Aumentar adultos">+</button>
+                </div>
+              </div>
+
+              <div class="passenger-row">
+                <div><strong>Crianças</strong><small>2 a 11 anos</small></div>
+                <div class="counter" aria-label="Quantidade de crianças">
+                  <button type="button" data-action="decrement" data-passenger="children" aria-label="Diminuir crianças">−</button>
+                  <output id="children-count" aria-live="polite">0</output>
+                  <button type="button" data-action="increment" data-passenger="children" aria-label="Aumentar crianças">+</button>
+                </div>
+              </div>
+
+              <div class="passenger-row">
+                <div><strong>Bebês</strong><small>Menores de 2 anos</small></div>
+                <div class="counter" aria-label="Quantidade de bebês">
+                  <button type="button" data-action="decrement" data-passenger="babies" aria-label="Diminuir bebês">−</button>
+                  <output id="babies-count" aria-live="polite">0</output>
+                  <button type="button" data-action="increment" data-passenger="babies" aria-label="Aumentar bebês">+</button>
+                </div>
+              </div>
+            </fieldset>
+
+            <p class="booking-error" id="booking-error" role="alert" hidden>Selecione a data do passeio para continuar.</p>
+            <button class="confirm-button" type="submit">Confirmar pelo WhatsApp</button>
+          </form>
+
+          <p class="booking-note">A confirmação depende da disponibilidade, da maré, das condições climáticas, da capacidade dos veículos e da operação dos parceiros.</p>
+        </aside>
+      </div>
+    </main>
+
+    <script src="detalhes.js"></script>
+  </body>
+</html>
