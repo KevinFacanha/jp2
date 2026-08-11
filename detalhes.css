@@ -121,5 +121,7 @@ h2 { margin-bottom: 14px; font-size: clamp(26px, 3vw, 36px); line-height: 1.08; 
   .tour-facts { grid-template-columns: 1fr; padding: 0; }
   .tour-fact, .tour-fact:first-child, .tour-fact:last-child { padding: 15px 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .tour-fact:last-child { border-bottom: 0; }
+  .date-field { width: 100%; min-width: 0; }
+  .date-field input[type="date"] { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
   .passenger-row { padding: 14px; }
 }

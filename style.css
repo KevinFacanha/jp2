@@ -79,7 +79,7 @@ h3 { line-height: 1.2; }
 .hero-actions { display: flex; align-items: center; gap: 32px; }
 .booking-card { align-self: center; padding: 14px; background: rgba(255,255,255,.97); border-radius: 18px; color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.25); }
 .booking-image { height: 180px; border-radius: 12px; background-size: cover; background-position: center; }
-.card-image-hero { background-image: url("assets/litoral sul.jpg"); }
+.card-image-hero { background-image: url("assets/litoral sul.png"); }
 .card-kicker { margin: 20px 4px 8px; color: var(--ocean); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
 .booking-card h2 { margin: 0 4px 12px; font-size: 23px; line-height: 1.15; }
 .card-meta { display: flex; gap: 20px; color: #708798; font-size: 13px; }
@@ -107,7 +107,7 @@ h3 { line-height: 1.2; }
 .tour-card[data-tour-url] { cursor: pointer; }
 .tour-card[data-tour-url]:focus-visible { outline: 3px solid var(--ocean); outline-offset: 4px; }
 .tour-image { position: relative; height: 255px; background-size: cover; background-position: center; }
-.image-seixas { background-image: url("assets/litoral sul.jpg"); }
+.image-seixas { background-image: url("assets/litoral sul.png"); }
 .image-coqueirinho { background-image: url("assets/litoral norte.png"); }
 .image-jacare { background-image: url("assets/seixas 2.jpg"); }
 .image-buggy { background-image: url("assets/buggy norte 1.jpg"); }
@@ -171,10 +171,10 @@ h3 { line-height: 1.2; }
 .destination-card > span { position: absolute; z-index: 2; right: 18px; bottom: 22px; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--white); color: var(--navy); font-size: 19px; }
 .dest-litoral-sul-2 { background-image: url("assets/sul 2.webp"); }
 .dest-areia-vermelha { background-image: url("assets/vermelha1.png"); }
-.dest-pipa { background-image: url("https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=85"); }
-.dest-maragogi { background-image: url("https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&w=800&q=85"); }
+.dest-pipa { background-image: url("assets/pipa2.avif"); }
+.dest-maragogi { background-image: url("assets/porto1.jpg"); }
 .dest-cabaceiras { background-image: url("assets/roli1.webp"); }
-.dest-natal { background-image: url("https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=800&q=85"); }
+.dest-natal { background-image: url("assets/recife1.jpeg"); }
 
 .testimonials { background: var(--white); }
 .testimonial-layout { display: grid; grid-template-columns: minmax(280px, .82fr) minmax(0, 1.58fr); gap: clamp(52px, 7vw, 92px); align-items: center; }

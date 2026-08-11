@@ -8,7 +8,7 @@ const tours = {
     duration: 'Aprox. 7 horas',
     price: 'R$ 150 / pessoa',
     description: 'Um roteiro pelo litoral sul da Paraíba para conhecer praias, falésias e paisagens que fazem parte da experiência de João Pessoa. A programação e os pontos visitados são confirmados pela equipe antes da reserva.',
-    images: ['assets/litoral sul.jpg', 'assets/litoral sul1.webp', 'assets/litoral sul2.webp']
+    images: ['assets/litoral sul.png', 'assets/litoral sul1.webp', 'assets/litoral sul2.webp']
   },
   'litoral-norte-completo': {
     name: 'Litoral Norte Completo',
@@ -89,7 +89,7 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 160',
     description: 'Duas cidades históricas do Nordeste em um único dia de passeio.',
-    images: ['assets/details/c-recife-olinda.webp', 'assets/details/c-recife-olinda-2.webp', 'assets/details/c-recife-olinda-3.webp']
+    images: ['assets/recife1.jpeg', 'assets/recife2.jpg', 'assets/recife3.jpg']
   },
   'porto-de-galinhas': {
     name: 'Porto de Galinhas',
@@ -98,7 +98,7 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 160',
     description: 'Águas cristalinas, piscinas naturais e praias paradisíacas.',
-    images: ['assets/details/c-porto-galinhas.webp', 'assets/details/c-porto-galinhas-2.webp', 'assets/details/c-porto-galinhas-3.webp']
+    images: ['assets/porto1.jpg', 'assets/porto2.webp', 'assets/porto3.webp']
   },
   'pipa': {
     name: 'Pipa',
@@ -107,7 +107,7 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 160',
     description: 'Falésias, mirantes e mar azul no Rio Grande do Norte.',
-    images: ['assets/details/c-pipa.webp', 'assets/details/c-pipa-2.webp', 'assets/details/c-pipa-3.webp']
+    images: ['assets/pipa1.webp', 'assets/pipa2.avif', 'assets/pipa3.jpeg']
   }
 };
 
