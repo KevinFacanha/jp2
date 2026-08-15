@@ -81,8 +81,8 @@
         <aside class="booking-panel" aria-labelledby="booking-title">
           <p class="eyebrow">Solicite sua reserva</p>
           <h2 id="booking-title">Organize seu passeio</h2>
-          <div class="booking-price">
-            <span>Valor informado</span>
+          <div class="booking-price" aria-live="polite">
+            <span id="booking-total-passengers">Total de passageiros: 1</span>
             <strong id="booking-tour-price"></strong>
           </div>
 
@@ -96,7 +96,7 @@
               <legend>Passageiros</legend>
 
               <div class="passenger-row">
-                <div><strong>Adultos</strong><small>12 anos ou mais</small></div>
+                <div><strong>Adultos</strong><small id="adults-description">12 anos ou mais</small></div>
                 <div class="counter" aria-label="Quantidade de adultos">
                   <button type="button" data-action="decrement" data-passenger="adults" aria-label="Diminuir adultos">−</button>
                   <output id="adults-count" aria-live="polite">1</output>
@@ -105,7 +105,7 @@
               </div>
 
               <div class="passenger-row">
-                <div><strong>Crianças</strong><small>2 a 11 anos</small></div>
+                <div><strong>Crianças</strong><small id="children-description">2 a 11 anos</small></div>
                 <div class="counter" aria-label="Quantidade de crianças">
                   <button type="button" data-action="decrement" data-passenger="children" aria-label="Diminuir crianças">−</button>
                   <output id="children-count" aria-live="polite">0</output>
@@ -114,7 +114,7 @@
               </div>
 
               <div class="passenger-row">
-                <div><strong>Bebês</strong><small>Menores de 2 anos</small></div>
+                <div><strong>Bebês</strong><small id="babies-description">Menores de 2 anos</small></div>
                 <div class="counter" aria-label="Quantidade de bebês">
                   <button type="button" data-action="decrement" data-passenger="babies" aria-label="Diminuir bebês">−</button>
                   <output id="babies-count" aria-live="polite">0</output>

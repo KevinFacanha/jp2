@@ -1,4 +1,5 @@
 const WHATSAPP_NUMBER = '5583998048936';
+const PASSENGER_FARES = Object.freeze({ adults: 150, children: 75, babies: 0 });
 
 const tours = {
   'litoral-sul-1': {
@@ -7,6 +8,7 @@ const tours = {
     location: 'João Pessoa, Paraíba',
     duration: 'Aprox. 7 horas',
     price: 'R$ 150 / pessoa',
+    fares: PASSENGER_FARES,
     description: 'Um roteiro pelo litoral sul da Paraíba para conhecer praias, falésias e paisagens que fazem parte da experiência de João Pessoa. A programação e os pontos visitados são confirmados pela equipe antes da reserva.',
     images: ['assets/litoral sul.png', 'assets/litoral sul1.webp', 'assets/litoral sul2.webp']
   },
@@ -16,6 +18,7 @@ const tours = {
     location: 'João Pessoa, Paraíba',
     duration: 'Aprox. 7 horas',
     price: 'R$ 200 / pessoa',
+    fares: PASSENGER_FARES,
     description: 'Um passeio pelo litoral norte para aproveitar diferentes paisagens costeiras e conhecer pontos do roteiro local. A sequência de visitas e os horários são confirmados antes da reserva.',
     images: ['assets/litoral norte.png', 'assets/litoral norte1.png', 'assets/litoral norte2.png']
   },
@@ -25,6 +28,7 @@ const tours = {
     location: 'João Pessoa, Paraíba',
     duration: 'Aprox. 3 horas',
     price: 'R$ 100 / pessoa',
+    fares: PASSENGER_FARES,
     description: 'Uma experiência nas Piscinas Naturais do Seixas, com águas cristalinas e contato próximo com o mar paraibano. A realização depende da maré, das condições climáticas e da operação dos parceiros.',
     images: ['assets/seixas 2.jpg', 'assets/seixas 1.png', 'assets/seixas.png']
   },
@@ -34,6 +38,7 @@ const tours = {
     location: 'João Pessoa, Paraíba',
     duration: 'Aprox. 7 horas',
     price: 'A partir de R$ 600',
+    fares: PASSENGER_FARES,
     description: 'Passeio de buggy pelo litoral sul da Paraíba, combinando aventura e paisagens costeiras. O roteiro, os horários e as orientações são confirmados pela equipe antes da reserva.',
     images: ['assets/buggy norte 1.jpg', 'assets/buggy norte 2.jpg', 'assets/buggy norte.jpeg']
   },
@@ -43,6 +48,7 @@ const tours = {
     location: 'João Pessoa, Paraíba',
     duration: 'Dia inteiro',
     price: 'R$ 400 / duas pessoas',
+    fares: PASSENGER_FARES,
     description: 'Uma experiência de dia inteiro pensada para casal ou dupla conhecer paisagens do litoral paraibano com praticidade. A programação completa é confirmada durante o atendimento.',
     images: ['assets/details/tour-combo.webp', 'assets/details/g-tabatinga.webp', 'assets/details/g-carapibus.webp']
   },
@@ -52,6 +58,7 @@ const tours = {
     location: 'João Pessoa, Paraíba',
     duration: 'Meio período',
     price: 'R$ 100 / pessoa',
+    fares: PASSENGER_FARES,
     description: 'Um roteiro cultural por João Pessoa para conhecer diferentes pontos da cidade e aproveitar melhor o período do passeio. Os locais visitados e os horários são confirmados antes da reserva.',
     images: ['assets/city1.jpeg', 'assets/city2.jpg', 'assets/city.jpg']
   },
@@ -61,6 +68,7 @@ const tours = {
     location: 'Paraíba, Brasil',
     duration: 'Consulte a equipe',
     price: 'R$ 150',
+    fares: PASSENGER_FARES,
     description: 'Praias tranquilas, falésias, mirantes e o encontro do rio com o mar.',
     images: ['assets/sul 2.webp', 'assets/sul 3.jpg', 'assets/sul 4.jpg']
   },
@@ -70,6 +78,7 @@ const tours = {
     location: 'Cabedelo, Paraíba',
     duration: 'Consulte a equipe',
     price: 'R$ 100',
+    fares: PASSENGER_FARES,
     description: 'Banco de areia com piscinas naturais de águas cristalinas na maré baixa.',
     images: ['assets/vermelha1.png', 'assets/vermelha2.jpg', 'assets/vermelha3.jpg']
   },
@@ -79,6 +88,7 @@ const tours = {
     location: 'Cabaceiras, Paraíba',
     duration: 'Consulte a equipe',
     price: 'R$ 300',
+    fares: PASSENGER_FARES,
     description: 'Cenários de cinema, construções históricas e a cultura do Cariri Paraibano.',
     images: ['assets/roli1.webp', 'assets/roli2.jpg', 'assets/roli3.jpg']
   },
@@ -88,6 +98,7 @@ const tours = {
     location: 'Pernambuco, Brasil',
     duration: 'Consulte a equipe',
     price: 'R$ 160',
+    fares: PASSENGER_FARES,
     description: 'Duas cidades históricas do Nordeste em um único dia de passeio.',
     images: ['assets/recife1.jpeg', 'assets/recife2.jpg', 'assets/recife3.jpg']
   },
@@ -97,6 +108,7 @@ const tours = {
     location: 'Pernambuco, Brasil',
     duration: 'Consulte a equipe',
     price: 'R$ 160',
+    fares: PASSENGER_FARES,
     description: 'Águas cristalinas, piscinas naturais e praias paradisíacas.',
     images: ['assets/porto1.jpg', 'assets/porto2.webp', 'assets/porto3.webp']
   },
@@ -106,6 +118,7 @@ const tours = {
     location: 'Rio Grande do Norte, Brasil',
     duration: 'Consulte a equipe',
     price: 'R$ 160',
+    fares: PASSENGER_FARES,
     description: 'Falésias, mirantes e mar azul no Rio Grande do Norte.',
     images: ['assets/pipa1.webp', 'assets/pipa2.avif', 'assets/pipa3.jpeg']
   }
@@ -114,6 +127,16 @@ const tours = {
 const requestedSlug = new URLSearchParams(window.location.search).get('tour');
 const tour = tours[requestedSlug] || tours['litoral-sul-1'];
 const passengerCounts = { adults: 1, children: 0, babies: 0 };
+const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  minimumFractionDigits: 2
+});
+const fareFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  maximumFractionDigits: 0
+});
 
 const setText = (selector, text) => {
   const element = document.querySelector(selector);
@@ -126,8 +149,10 @@ setText('#tour-name', tour.name);
 setText('#tour-location', tour.location);
 setText('#tour-duration', tour.duration);
 setText('#tour-price', tour.price);
-setText('#booking-tour-price', tour.price);
 setText('#tour-description', tour.description);
+setText('#adults-description', `12 anos ou mais • ${fareFormatter.format(tour.fares.adults)} por pessoa`);
+setText('#children-description', `2 a 11 anos • ${fareFormatter.format(tour.fares.children)} por pessoa`);
+setText('#babies-description', 'Menores de 2 anos • Grátis');
 
 const mainImage = document.querySelector('#detail-main-image');
 const thumbnails = [...document.querySelectorAll('.gallery-thumb')];
@@ -166,6 +191,22 @@ const updatePassengerCount = (passenger) => {
   document.querySelector(`#${passenger}-count`).textContent = passengerCounts[passenger];
 };
 
+const getTotalPassengers = () =>
+  passengerCounts.adults + passengerCounts.children + passengerCounts.babies;
+
+const getTotalPrice = () =>
+  Object.entries(passengerCounts).reduce(
+    (total, [passenger, count]) => total + (count * tour.fares[passenger]),
+    0
+  );
+
+const updateBookingSummary = () => {
+  setText('#booking-total-passengers', `Total de passageiros: ${getTotalPassengers()}`);
+  setText('#booking-tour-price', currencyFormatter.format(getTotalPrice()));
+};
+
+updateBookingSummary();
+
 document.querySelectorAll('[data-action][data-passenger]').forEach((button) => {
   button.addEventListener('click', () => {
     const passenger = button.dataset.passenger;
@@ -173,6 +214,7 @@ document.querySelectorAll('[data-action][data-passenger]').forEach((button) => {
     const change = button.dataset.action === 'increment' ? 1 : -1;
     passengerCounts[passenger] = Math.max(minimum, passengerCounts[passenger] + change);
     updatePassengerCount(passenger);
+    updateBookingSummary();
   });
 });
 
@@ -193,7 +235,18 @@ document.querySelector('#booking-form').addEventListener('submit', (event) => {
   error.hidden = true;
   const selectedDate = new Date(`${dateInput.value}T12:00:00`);
   const formattedDate = new Intl.DateTimeFormat('pt-BR').format(selectedDate);
-  const message = `Olá! Encontrei o Imperador do Turismo pelo site e gostaria de consultar disponibilidade para o passeio ${tour.name}. Data escolhida: ${formattedDate}. Passageiros: ${passengerCounts.adults} adulto(s), ${passengerCounts.children} criança(s) e ${passengerCounts.babies} bebê(s).`;
+  const message = `Olá! Encontrei o Imperador do Turismo pelo site e gostaria de consultar disponibilidade para o passeio ${tour.name}.
+
+Data desejada: ${formattedDate}
+
+Adultos: ${passengerCounts.adults}
+Crianças: ${passengerCounts.children}
+Bebês: ${passengerCounts.babies}
+Total de passageiros: ${getTotalPassengers()}
+
+Valor total: ${currencyFormatter.format(getTotalPrice())}
+
+Poderia confirmar a disponibilidade e me passar mais informações?`;
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
   window.open(whatsappUrl, '_blank', 'noopener,noreferrer');

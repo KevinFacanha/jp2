@@ -50,8 +50,16 @@ navMenu?.querySelectorAll('a').forEach((link) => {
   });
 });
 
-window.addEventListener('scroll', () => {
+let navbarScrollFrame;
+
+const updateNavbarScrollState = () => {
   navbar.classList.toggle('is-scrolled', window.scrollY > 650);
+  navbarScrollFrame = null;
+};
+
+window.addEventListener('scroll', () => {
+  if (navbarScrollFrame) return;
+  navbarScrollFrame = requestAnimationFrame(updateNavbarScrollState);
 }, { passive: true });
 
 const observer = new IntersectionObserver((entries) => {
@@ -92,7 +100,24 @@ toursToggle?.addEventListener('click', () => {
   setToursExpanded(!toursExpanded);
 });
 
-document.querySelector('.play-button')?.addEventListener('click', (event) => {
-  event.preventDefault();
-  document.querySelector('#passeios')?.scrollIntoView({ behavior: 'smooth' });
+const visualCard = document.querySelector('.visual-card');
+const visualVideo = visualCard?.querySelector('.visual-video');
+const playButton = visualCard?.querySelector('.play-button');
+
+playButton?.addEventListener('click', async () => {
+  if (!visualVideo || visualVideo.src) return;
+
+  const isMobile = window.matchMedia('(max-width: 760px)').matches;
+  visualVideo.src = isMobile
+    ? visualVideo.dataset.mobileSrc
+    : visualVideo.dataset.desktopSrc;
+
+  visualCard.classList.add('is-video-active');
+  visualVideo.load();
+
+  try {
+    await visualVideo.play();
+  } catch {
+    // Os controles permanecem disponíveis caso o navegador exija um novo toque.
+  }
 });
