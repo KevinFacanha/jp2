@@ -121,3 +121,139 @@ playButton?.addEventListener('click', async () => {
     // Os controles permanecem disponíveis caso o navegador exija um novo toque.
   }
 });
+
+const googleReviewsHero = document.querySelector('[data-google-reviews]');
+const reviewsSummary = document.querySelector('[data-reviews-summary]');
+const reviewsList = document.querySelector('[data-reviews-list]');
+
+const formatRating = (rating) =>
+  new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  }).format(rating);
+
+const formatReviewCount = (count) =>
+  `${new Intl.NumberFormat('pt-BR').format(count)} ${count === 1 ? 'avaliação' : 'avaliações'} no Google`;
+
+const formatStars = (rating) => {
+  const filledStars = Math.max(0, Math.min(5, Math.round(rating)));
+  return `${'★'.repeat(filledStars)}${'☆'.repeat(5 - filledStars)}`;
+};
+
+const formatReviewDate = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Avaliação do Google';
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    month: 'long',
+    year: 'numeric'
+  }).format(date);
+};
+
+const createReviewerAvatar = (review) => {
+  if (review.profilePhotoUrl) {
+    const image = document.createElement('img');
+    image.src = review.profilePhotoUrl;
+    image.alt = '';
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    image.referrerPolicy = 'no-referrer';
+    image.addEventListener('error', () => image.replaceWith(createReviewerFallback(review.displayName)), { once: true });
+    return image;
+  }
+
+  return createReviewerFallback(review.displayName);
+};
+
+const createReviewerFallback = (displayName) => {
+  const fallback = document.createElement('span');
+  fallback.setAttribute('aria-hidden', 'true');
+  fallback.textContent = (displayName || '?').trim().charAt(0).toLocaleUpperCase('pt-BR') || '?';
+  return fallback;
+};
+
+const createReviewCard = (review, index) => {
+  const card = document.createElement('article');
+  card.className = `quote-card reveal visible delay-${index + 1}${index === 1 ? ' featured-quote' : ''}`;
+
+  const rating = document.createElement('div');
+  rating.className = 'quote-rating';
+  rating.setAttribute('aria-label', `${review.starRating} de 5 estrelas`);
+
+  const stars = document.createElement('span');
+  stars.setAttribute('aria-hidden', 'true');
+  stars.textContent = formatStars(review.starRating);
+  rating.append(stars);
+
+  const comment = document.createElement('p');
+  comment.textContent = review.comment;
+
+  const author = document.createElement('div');
+  author.className = 'author';
+  author.append(createReviewerAvatar(review));
+
+  const authorDetails = document.createElement('div');
+  const name = document.createElement('strong');
+  name.textContent = review.displayName;
+  const date = document.createElement('small');
+  date.textContent = formatReviewDate(review.createTime);
+  authorDetails.append(name, date);
+  author.append(authorDetails);
+
+  card.append(rating, comment, author);
+  return card;
+};
+
+const renderGoogleReviews = (data) => {
+  const averageRating = Number(data.averageRating);
+  const totalReviewCount = Number(data.totalReviewCount);
+  const reviews = Array.isArray(data.reviews) ? data.reviews.slice(0, 3) : [];
+
+  if (!Number.isFinite(averageRating) || averageRating <= 0 || !Number.isFinite(totalReviewCount)) {
+    throw new Error('Invalid reviews response');
+  }
+
+  const ratingLabel = `${formatRating(averageRating)} de 5 estrelas. ${formatReviewCount(totalReviewCount)}`;
+  const averageStars = formatStars(averageRating);
+
+  googleReviewsHero.querySelector('[data-google-rating-stars]').textContent = `${formatRating(averageRating)} ${averageStars}`;
+  googleReviewsHero.querySelector('[data-google-reviews-label]').textContent = formatReviewCount(totalReviewCount);
+  googleReviewsHero.setAttribute('aria-label', ratingLabel);
+
+  reviewsSummary.querySelector('[data-average-rating]').textContent = formatRating(averageRating);
+  reviewsSummary.querySelector('[data-average-stars]').textContent = averageStars;
+  reviewsSummary.querySelector('[data-total-reviews]').textContent = formatReviewCount(totalReviewCount);
+  reviewsSummary.setAttribute('aria-label', ratingLabel);
+
+  reviewsList.replaceChildren();
+  reviews.forEach((review, index) => reviewsList.append(createReviewCard(review, index)));
+  reviewsList.classList.remove('reviews-loading');
+  reviewsList.setAttribute('aria-busy', 'false');
+
+  if (reviews.length === 0) {
+    const status = document.createElement('span');
+    status.className = 'reviews-status';
+    status.textContent = 'Nenhuma avaliação com comentário disponível.';
+    reviewsList.append(status);
+  }
+};
+
+const loadGoogleReviews = async () => {
+  if (!googleReviewsHero || !reviewsSummary || !reviewsList) return;
+
+  try {
+    const response = await fetch('/api/google-reviews', {
+      headers: { Accept: 'application/json' }
+    });
+
+    if (!response.ok) throw new Error('Reviews request failed');
+    renderGoogleReviews(await response.json());
+  } catch {
+    reviewsList.classList.remove('reviews-loading');
+    reviewsList.setAttribute('aria-busy', 'false');
+    const status = reviewsList.querySelector('.reviews-status');
+    if (status) status.textContent = 'Avaliações do Google temporariamente indisponíveis.';
+  }
+};
+
+loadGoogleReviews();
