@@ -44,17 +44,31 @@ const readResponseBody = async (response) => {
   }
 };
 
-const safeUrlForLogging = (value) => {
-  const url = new URL(value);
-  const sensitiveParameters = /token|secret|authorization|credential|password|api_?key/i;
+const redactSensitiveText = (value, sensitiveValues = []) => {
+  let sanitized = String(value).replace(/Bearer\s+[^\s",]+/gi, 'Bearer [REDACTED]');
 
-  url.username = '';
-  url.password = '';
-  for (const parameter of [...url.searchParams.keys()]) {
-    if (sensitiveParameters.test(parameter)) url.searchParams.set(parameter, '[REDACTED]');
+  for (const sensitiveValue of sensitiveValues) {
+    if (typeof sensitiveValue === 'string' && sensitiveValue) {
+      sanitized = sanitized.split(sensitiveValue).join('[REDACTED]');
+    }
   }
 
-  return url.toString();
+  return sanitized;
+};
+
+const sanitizeErrorBody = (value, sensitiveValues = []) => {
+  if (typeof value === 'string') return redactSensitiveText(value, sensitiveValues);
+  if (Array.isArray(value)) return value.map((item) => sanitizeErrorBody(item, sensitiveValues));
+  if (!value || typeof value !== 'object') return value;
+
+  const sensitiveField = /token|secret|authorization|credential|password|client_?id|api_?key/i;
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      key,
+      sensitiveField.test(key) ? '[REDACTED]' : sanitizeErrorBody(item, sensitiveValues)
+    ])
+  );
 };
 
 const numericResourceId = (value, resourceName, environmentVariable) => {
@@ -67,26 +81,71 @@ const numericResourceId = (value, resourceName, environmentVariable) => {
   return id;
 };
 
-const requestJson = async (url, options, { logGoogleBusinessFailure = false } = {}) => {
-  const response = await fetch(url, {
-    ...options,
+const requestOAuthToken = async () => {
+  const response = await fetch(GOOGLE_TOKEN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+      grant_type: 'refresh_token'
+    }),
     signal: AbortSignal.timeout(10000)
   });
 
   if (!response.ok) {
     const body = await readResponseBody(response);
+    const safeBody = sanitizeErrorBody(body, [
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REFRESH_TOKEN
+    ]);
+    const oauthError = safeBody && typeof safeBody === 'object' && !Array.isArray(safeBody)
+      ? safeBody
+      : {};
 
-    if (logGoogleBusinessFailure) {
-      console.error('[google-reviews] Google Business Profile HTTP error:', {
-        status: response.status,
-        statusText: response.statusText,
-        body,
-        url: safeUrlForLogging(url)
-      });
-    }
+    console.error('[google-reviews] ' + JSON.stringify({
+      stage: 'oauth_token',
+      status: response.status,
+      statusText: response.statusText,
+      error: oauthError.error ?? null,
+      error_description: oauthError.error_description ?? null
+    }));
+
+    const error = new Error(`Google OAuth token request failed with status ${response.status}`);
+    error.stage = 'oauth_token';
+    error.failureLogged = true;
+    throw error;
+  }
+
+  return response.json();
+};
+
+const requestGoogleReviews = async (url, accessToken) => {
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    },
+    signal: AbortSignal.timeout(10000)
+  });
+
+  if (!response.ok) {
+    const body = await readResponseBody(response);
+    const sanitizedBody = sanitizeErrorBody(body, [accessToken]);
+
+    console.error('[google-reviews] ' + JSON.stringify({
+      stage: 'google_reviews',
+      status: response.status,
+      statusText: response.statusText,
+      body: sanitizedBody
+    }));
 
     const error = new Error(`Google request failed with status ${response.status}`);
-    error.googleBusinessFailureLogged = logGoogleBusinessFailure;
+    error.stage = 'google_reviews';
+    error.failureLogged = true;
     throw error;
   }
 
@@ -106,33 +165,26 @@ module.exports = async function handler(request, response) {
     return response.status(503).json({ error: 'Reviews are temporarily unavailable' });
   }
 
+  let currentStage = 'oauth_token';
+  let accessToken = null;
+
   try {
-    const tokenData = await requestJson(GOOGLE_TOKEN_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-        grant_type: 'refresh_token'
-      })
-    });
+    const tokenData = await requestOAuthToken();
 
     if (typeof tokenData.access_token !== 'string' || !tokenData.access_token) {
-      throw new Error('Google token response did not include an access token');
+      const error = new Error('Google token response did not include an access token');
+      error.stage = 'oauth_token';
+      throw error;
     }
+
+    accessToken = tokenData.access_token;
+    currentStage = 'google_reviews';
 
     const accountId = numericResourceId(process.env.GOOGLE_ACCOUNT_ID, 'accounts', 'GOOGLE_ACCOUNT_ID');
     const locationId = numericResourceId(process.env.GOOGLE_LOCATION_ID, 'locations', 'GOOGLE_LOCATION_ID');
     const reviewsUrl = `${GOOGLE_BUSINESS_API_URL}/accounts/${accountId}/locations/${locationId}/reviews?pageSize=50&orderBy=updateTime%20desc`;
 
-    const reviewsData = await requestJson(reviewsUrl, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${tokenData.access_token}`
-      }
-    }, { logGoogleBusinessFailure: true });
+    const reviewsData = await requestGoogleReviews(reviewsUrl, accessToken);
 
     const reviews = Array.isArray(reviewsData.reviews)
       ? reviewsData.reviews
@@ -157,8 +209,16 @@ module.exports = async function handler(request, response) {
     response.setHeader('Cache-Control', CACHE_CONTROL);
     return response.status(200).json(payload);
   } catch (error) {
-    if (!error.googleBusinessFailureLogged) {
-      console.error('[google-reviews] Google Business Profile request failed:', error.message);
+    if (!error.failureLogged) {
+      console.error('[google-reviews] ' + JSON.stringify({
+        stage: error.stage || currentStage,
+        error: redactSensitiveText(error.message, [
+          process.env.GOOGLE_CLIENT_ID,
+          process.env.GOOGLE_CLIENT_SECRET,
+          process.env.GOOGLE_REFRESH_TOKEN,
+          accessToken
+        ])
+      }));
     }
     response.setHeader('Cache-Control', 'no-store');
     return response.status(503).json({ error: 'Reviews are temporarily unavailable' });
