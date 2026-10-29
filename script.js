@@ -103,14 +103,113 @@ toursToggle?.addEventListener('click', () => {
 const visualCard = document.querySelector('.visual-card');
 const visualVideo = visualCard?.querySelector('.visual-video');
 const playButton = visualCard?.querySelector('.play-button');
+const visualPlayer = visualCard?.querySelector('.visual-player');
+const rotateHint = visualCard?.querySelector('.video-rotate-hint');
+const fullscreenButton = visualCard?.querySelector('.video-fullscreen');
+const exitImmersiveButton = visualCard?.querySelector('.video-exit-immersive');
+const videoPortrait = window.matchMedia('(orientation: portrait)');
+const videoLandscape = window.matchMedia('(orientation: landscape) and (max-width: 1100px) and (hover: none) and (pointer: coarse)');
+// A secondary touchscreen on a desktop must not enable the mobile player.
+const videoTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)');
+let rotateHintShown = false;
+let rotateHintTimer;
+let videoPlaybackStarted = false;
+let immersiveDismissed = false;
+let videoWasFullscreen = false;
+
+const isVideoFullscreen = () => Boolean(
+  (document.fullscreenElement && visualPlayer?.contains(document.fullscreenElement)) ||
+  visualVideo?.webkitDisplayingFullscreen
+);
+
+const canFullscreenVideo = () => Boolean(
+  (document.fullscreenEnabled && visualVideo?.requestFullscreen) ||
+  visualVideo?.webkitEnterFullscreen
+);
+
+const hideRotateHint = () => {
+  clearTimeout(rotateHintTimer);
+  if (rotateHint) rotateHint.hidden = true;
+};
+
+const updateVideoOrientation = () => {
+  if (videoPortrait.matches) immersiveDismissed = false;
+  if (!videoTouchDevice.matches || !videoPortrait.matches || isVideoFullscreen()) hideRotateHint();
+  if (fullscreenButton) {
+    fullscreenButton.hidden = !videoTouchDevice.matches || !canFullscreenVideo() || isVideoFullscreen();
+  }
+  visualCard?.classList.toggle('is-landscape-player',
+    videoTouchDevice.matches && videoLandscape.matches && videoPlaybackStarted &&
+    !immersiveDismissed && !isVideoFullscreen());
+};
+
+// matchMedia also handles iOS, without requiring orientation locking or a new video element.
+[videoPortrait, videoLandscape, videoTouchDevice].forEach((query) => {
+  if (query.addEventListener) query.addEventListener('change', updateVideoOrientation);
+  else query.addListener(updateVideoOrientation);
+});
+
+visualVideo?.addEventListener('playing', () => {
+  videoPlaybackStarted = true;
+  updateVideoOrientation();
+  if (!rotateHintShown && videoTouchDevice.matches && videoPortrait.matches && rotateHint) {
+    rotateHintShown = true;
+    rotateHint.hidden = false;
+    rotateHintTimer = setTimeout(hideRotateHint, 4000);
+  }
+});
+
+visualVideo?.addEventListener('ended', () => {
+  videoPlaybackStarted = false;
+  rotateHintShown = false;
+  immersiveDismissed = false;
+  hideRotateHint();
+  updateVideoOrientation();
+});
+
+exitImmersiveButton?.addEventListener('click', () => {
+  immersiveDismissed = true;
+  updateVideoOrientation();
+});
+
+// Keep native and mobile controls on the same fullscreen element. Fullscreening
+// the wrapper would leave it expanded after the native video control exits.
+const syncVideoFullscreen = () => {
+  const fullscreen = isVideoFullscreen();
+  if (videoWasFullscreen && !fullscreen) immersiveDismissed = true;
+  videoWasFullscreen = fullscreen;
+  updateVideoOrientation();
+};
+
+document.addEventListener('fullscreenchange', syncVideoFullscreen);
+visualVideo?.addEventListener('webkitbeginfullscreen', syncVideoFullscreen);
+visualVideo?.addEventListener('webkitendfullscreen', syncVideoFullscreen);
+
+fullscreenButton?.addEventListener('click', async () => {
+  if (!videoTouchDevice.matches || !visualVideo) return;
+  hideRotateHint();
+  try {
+    if (document.fullscreenElement && visualPlayer?.contains(document.fullscreenElement)) {
+      await document.exitFullscreen();
+    } else if (visualVideo.webkitDisplayingFullscreen) {
+      visualVideo.webkitExitFullscreen();
+    } else if (document.fullscreenEnabled && visualVideo.requestFullscreen) {
+      await visualVideo.requestFullscreen();
+    } else if (visualVideo.webkitEnterFullscreen) {
+      visualVideo.webkitEnterFullscreen();
+    }
+  } catch {
+    // Native video controls remain available if fullscreen is refused.
+  }
+  syncVideoFullscreen();
+});
+
+updateVideoOrientation();
 
 playButton?.addEventListener('click', async () => {
   if (!visualVideo || visualVideo.src) return;
 
-  const isMobile = window.matchMedia('(max-width: 760px)').matches;
-  visualVideo.src = isMobile
-    ? visualVideo.dataset.mobileSrc
-    : visualVideo.dataset.desktopSrc;
+  visualVideo.src = visualVideo.dataset.src;
 
   visualCard.classList.add('is-video-active');
   visualVideo.load();

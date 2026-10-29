@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Consulte os detalhes do passeio e confirme a disponibilidade com o Imperador do Turismo." />
     <title>Detalhes do passeio | Imperador do Turismo</title>
-    <link rel="icon" type="image/png" href="assets/logo-imperador-fiel.png" />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="favicon.ico?v=3" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -58,7 +58,15 @@
 
           <article class="information-card">
             <p class="eyebrow" id="tour-category"></p>
-            <h1 id="tour-name"></h1>
+            <div class="tour-title-row">
+              <h1 id="tour-name"></h1>
+              <button class="booking-shortcut" type="button" aria-label="Ir para reserva" aria-controls="booking-panel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2" />
+                </svg>
+              </button>
+            </div>
 
             <div class="tour-facts" aria-label="Informações do passeio">
               <div class="tour-fact">
@@ -79,26 +87,16 @@
               <h2>Sobre o passeio</h2>
               <p id="tour-description"></p>
             </div>
-
-            <div class="content-block how-it-works">
-              <p class="eyebrow">Planejamento simples</p>
-              <h2>Como funciona o passeio</h2>
-              <p>Escolha a data e informe a quantidade de passageiros. Ao confirmar pelo WhatsApp, nossa equipe verificará a disponibilidade e informará o roteiro, os horários e todas as orientações antes da reserva.</p>
-              <ol>
-                <li><span>01</span><div><strong>Escolha a data</strong><p>Informe o dia desejado para consultar a disponibilidade.</p></div></li>
-                <li><span>02</span><div><strong>Adicione os passageiros</strong><p>Selecione a quantidade de adultos, crianças e bebês.</p></div></li>
-                <li><span>03</span><div><strong>Confirme pelo WhatsApp</strong><p>Envie os dados para receber a orientação da equipe.</p></div></li>
-              </ol>
-            </div>
           </article>
         </div>
 
-        <aside class="booking-panel" aria-labelledby="booking-title">
+        <aside class="booking-panel" id="booking-panel" aria-labelledby="booking-title">
           <p class="eyebrow">Solicite sua reserva</p>
           <h2 id="booking-title">Organize seu passeio</h2>
           <div class="booking-price" aria-live="polite">
             <span id="booking-total-passengers">Total de passageiros: 1</span>
             <strong id="booking-tour-price"></strong>
+            <small id="booking-price-note" hidden>Valor fixo por buggy</small>
           </div>
 
           <form id="booking-form" novalidate>
@@ -120,7 +118,7 @@
               </div>
 
               <div class="passenger-row">
-                <div><strong>Crianças</strong><small id="children-description">2 a 11 anos</small></div>
+                <div><strong>Crianças</strong><small id="children-description">6 a 11 anos</small></div>
                 <div class="counter" aria-label="Quantidade de crianças">
                   <button type="button" data-action="decrement" data-passenger="children" aria-label="Diminuir crianças">−</button>
                   <output id="children-count" aria-live="polite">0</output>
@@ -129,7 +127,7 @@
               </div>
 
               <div class="passenger-row">
-                <div><strong>Bebês</strong><small id="babies-description">Menores de 2 anos</small></div>
+                <div><strong>Bebês</strong><small id="babies-description">0 a 5 anos • Grátis</small></div>
                 <div class="counter" aria-label="Quantidade de bebês">
                   <button type="button" data-action="decrement" data-passenger="babies" aria-label="Diminuir bebês">−</button>
                   <output id="babies-count" aria-live="polite">0</output>

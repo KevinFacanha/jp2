@@ -46,6 +46,8 @@ a { color: inherit; text-decoration: none; }
 .gallery-thumb.is-active { border-color: var(--ocean); }
 .gallery-thumb:focus-visible, .back-link:focus-visible, .confirm-button:focus-visible, .counter button:focus-visible, input:focus-visible { outline: 3px solid var(--aqua); outline-offset: 3px; }
 
+.booking-shortcut { display: none; }
+
 .information-card { padding: clamp(28px, 4vw, 50px); }
 .eyebrow { margin: 0 0 12px; color: var(--ocean); font: 800 11px/1.3 "Manrope", sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 h1, h2, h3, p { margin-top: 0; }
@@ -61,17 +63,14 @@ h2 { margin-bottom: 14px; font-size: clamp(26px, 3vw, 36px); line-height: 1.08; 
 .tour-fact strong { display: block; font: 700 15px/1.35 "Manrope", sans-serif; }
 .content-block { margin-top: 38px; }
 .content-block > p { max-width: 770px; margin-bottom: 0; color: var(--muted); font-size: 16px; }
-.how-it-works { padding-top: 38px; border-top: 1px solid var(--line); }
-.how-it-works ol { padding: 0; margin: 28px 0 0; list-style: none; display: grid; gap: 0; }
-.how-it-works li { padding: 20px 0; display: grid; grid-template-columns: 42px 1fr; gap: 16px; border-top: 1px solid var(--line); }
-.how-it-works li > span { color: var(--ocean); font: 800 12px/1.5 "Manrope", sans-serif; }
-.how-it-works li strong { font-family: "Manrope", sans-serif; }
-.how-it-works li p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 
 .booking-panel { position: sticky; top: 24px; padding: 30px; }
 .booking-panel h2 { margin-bottom: 22px; font-size: 32px; }
 .booking-price { margin-bottom: 24px; padding: 16px 18px; border-radius: 12px; background: var(--soft); }
 .booking-price strong { display: block; color: var(--ocean); font: 800 22px/1.25 "Manrope", sans-serif; }
+.booking-panel.is-fixed-price .booking-price small { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; }
+.booking-panel.is-fixed-price .date-field { margin-bottom: 0; }
+.booking-panel.is-fixed-price .confirm-button { margin-top: 24px; }
 .date-field { display: grid; gap: 9px; margin-bottom: 26px; font-weight: 700; }
 .date-field input { width: 100%; min-height: 52px; padding: 0 15px; border: 1px solid #c9d9e2; border-radius: 8px; background: var(--white); }
 .date-field input:focus { border-color: var(--ocean); }
@@ -109,6 +108,21 @@ h2 { margin-bottom: 14px; font-size: clamp(26px, 3vw, 36px); line-height: 1.08; 
   .gallery-thumb { height: min(24vw, 140px); }
 }
 
+@media (max-width: 760px) {
+  .tour-title-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: start; gap: 12px; margin-bottom: 28px; }
+  .tour-title-row h1 { min-width: 0; margin-bottom: 0; overflow-wrap: anywhere; }
+  .booking-shortcut { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; color: var(--ocean); background: transparent; transition: background-color .2s ease; }
+  .booking-shortcut:hover { background: var(--soft); }
+  .booking-shortcut:active { background: var(--line); }
+  .booking-shortcut:focus-visible { outline: 3px solid var(--aqua); outline-offset: 3px; }
+  .booking-panel { scroll-margin-top: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .booking-shortcut { transition: none; }
+}
+
 @media (max-width: 560px) {
   .detail-header-inner { gap: 12px; }
   .detail-brand img { height: 58px; }
@@ -119,7 +133,7 @@ h2 { margin-bottom: 14px; font-size: clamp(26px, 3vw, 36px); line-height: 1.08; 
   .gallery-thumbnails.has-more-images { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .gallery-thumb { border-radius: 7px; }
   .information-card, .booking-panel { padding: 24px 20px; border-radius: 14px; }
-  h1 { font-size: 40px; }
+  h1 { font-size: clamp(32px, 8vw, 40px); }
   .tour-facts { grid-template-columns: 1fr; padding: 0; }
   .tour-fact, .tour-fact:first-child, .tour-fact:last-child { padding: 15px 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .tour-fact:last-child { border-bottom: 0; }

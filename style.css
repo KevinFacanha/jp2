@@ -101,40 +101,39 @@ h3 { line-height: 1.2; }
 .slider-controls { display: flex; gap: 8px; }
 .slider-controls button { width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--white); font-size: 18px; }
 .slider-controls button:hover { background: var(--navy); color: var(--white); }
-.tours-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.tour-card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); transition: transform .3s, box-shadow .3s; }
+.tours-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 22px; }
+.tour-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); transition: transform .3s, box-shadow .3s; }
 .tour-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); }
 .tour-card[data-tour-url] { cursor: pointer; }
 .tour-card[data-tour-url]:focus-visible { outline: 3px solid var(--ocean); outline-offset: 4px; }
-.tour-image { position: relative; height: 255px; background-size: cover; background-position: center; }
-.image-seixas { background-image: url("assets/litoral sul.png"); }
-.image-coqueirinho { background-image: url("assets/litoral norte.png"); }
-.image-jacare { background-image: url("assets/seixas 2.jpg"); }
-.image-buggy { background-image: url("assets/buggy norte 1.jpg"); }
-.image-picaozinho { background-image: url("assets/img 1.jpeg"); }
-.image-city { background-image: url("assets/city1.jpeg"); }
+.tour-image { position: relative; flex-shrink: 0; aspect-ratio: 4 / 3; }
+.tour-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .badge { position: absolute; top: 14px; left: 14px; padding: 7px 11px; border-radius: 5px; background: var(--ocean); color: var(--white); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
 .badge.coral { background: #ee805f; }
 .dark-badge { background: var(--navy); }
-.tour-content { padding: 24px; }
-.tour-content h3 { margin: 12px 0 10px; font-size: 23px; }
+.tour-content { display: flex; flex-direction: column; flex: 1; padding: 24px; }
+.tour-content .card-meta { min-height: 1.55em; }
+.tour-content h3 { min-height: 2.4em; margin: 12px 0 10px; font-size: 23px; }
 .tour-content > p { min-height: 64px; color: var(--muted); font-size: 14px; }
-.price-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 18px; border-top: 1px solid var(--line); }
-.price-row strong { display: block; font: 800 18px/1.2 "Manrope", sans-serif; color: var(--ocean); }
-.price-row > a { max-width: 108px; color: var(--ocean); font-size: 11px; font-weight: 700; line-height: 1.25; text-align: right; border-bottom: 1px solid currentColor; }
+.price-row { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: end; gap: 8px; min-height: 64px; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); }
+.price-row strong { display: block; white-space: nowrap; font: 800 18px/1.2 "Manrope", sans-serif; color: var(--ocean); }
+.price-row > a { justify-self: end; max-width: 108px; color: var(--ocean); font-size: 11px; font-weight: 700; line-height: 1.25; text-align: right; border-bottom: 1px solid currentColor; }
 .price-row > a:hover { color: var(--navy); }
 .additional-tours:not([hidden]) { display: contents; }
-.additional-tour { opacity: 0; transform: translateY(24px); transition: opacity .45s ease, transform .45s ease; }
+.additional-tour, .destination-card.additional-tour { opacity: 0; transform: translateY(24px); transition: opacity .45s ease, transform .45s ease; }
 .additional-tour.is-visible { opacity: 1; transform: translateY(0); }
 .additional-tour:nth-child(2) { transition-delay: .08s; }
 .additional-tour:nth-child(3) { transition-delay: .16s; }
+.additional-tour:nth-child(4) { transition-delay: .24s; }
+.additional-tour:nth-child(5) { transition-delay: .32s; }
 .tours-grid:not(.is-expanded) .additional-tour { transition-delay: 0s; }
 .center-action { text-align: center; margin-top: 42px; }
 .booking-notice { max-width: 880px; margin-top: 28px; color: var(--muted); font-size: 12px; text-align: center; }
 
 .visual-story { padding-top: 0; }
-.visual-card { min-height: 580px; position: relative; overflow: hidden; border-radius: 20px; color: var(--white); background: linear-gradient(90deg, rgba(1,33,52,.8), rgba(1,33,52,.05)), url("assets/piscina.webp") center/cover; }
-.visual-video { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; background: var(--navy-deep); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .3s ease; }
+.visual-card { min-height: 0; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 20px; color: var(--white); background: linear-gradient(90deg, rgba(1,33,52,.8), rgba(1,33,52,.05)), url("assets/piscina.webp") center/cover; }
+.visual-player { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
+.visual-video { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--navy-deep); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .3s ease; }
 .visual-card.is-video-active .visual-video { opacity: 1; visibility: visible; pointer-events: auto; }
 .visual-copy { position: absolute; z-index: 2; left: 64px; bottom: 65px; max-width: 550px; transition: opacity .25s ease, visibility .25s ease; }
 .visual-copy h2 { margin-bottom: 22px; }
@@ -142,6 +141,27 @@ h3 { line-height: 1.2; }
 .play-button { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 94px; height: 94px; border: 1px solid rgba(255,255,255,.6); border-radius: 50%; background: rgba(255,255,255,.17); backdrop-filter: blur(8px); color: var(--white); font-size: 22px; transition: .3s; }
 .play-button:hover { width: 104px; height: 104px; background: var(--white); color: var(--navy); }
 .visual-card.is-video-active .visual-copy, .visual-card.is-video-active .play-button { opacity: 0; visibility: hidden; pointer-events: none; }
+.visual-card.reveal.is-video-active { transform: none; transition: opacity .75s ease; }
+.video-rotate-hint { position: absolute; z-index: 3; top: 72px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; width: fit-content; max-width: calc(100% - 32px); margin-inline: auto; padding: 10px 14px; border-radius: 12px; background: rgba(3,30,51,.82); color: var(--white); font-size: 13px; line-height: 1.4; pointer-events: none; }
+.video-rotate-hint svg { flex: 0 0 24px; }
+.video-rotate-hint[hidden], .video-fullscreen[hidden] { display: none; }
+.video-fullscreen, .video-exit-immersive { position: absolute; z-index: 3; top: max(12px, env(safe-area-inset-top)); padding: 10px; min-height: 44px; border: 1px solid rgba(255,255,255,.5); border-radius: 10px; background: rgba(3,30,51,.8); color: var(--white); }
+.video-fullscreen { right: max(12px, env(safe-area-inset-right)); display: none; align-items: center; justify-content: center; min-width: 44px; }
+@media (hover: none) and (pointer: coarse) {
+  .is-video-active .video-fullscreen:not([hidden]) { display: flex; }
+}
+.video-exit-immersive { display: none; left: max(12px, env(safe-area-inset-left)); font-size: 12px; }
+.video-fullscreen:focus-visible, .video-exit-immersive:focus-visible { outline: 2px solid var(--aqua); outline-offset: 3px; }
+.visual-player:fullscreen { width: 100%; height: 100%; border-radius: 0; background: var(--navy-deep); }
+.visual-player:fullscreen .video-fullscreen, .visual-player:fullscreen .video-exit-immersive { display: none; }
+/* Reserve the card's space while its existing player fills a phone's landscape viewport. */
+@media (orientation: landscape) and (max-width: 1100px) and (hover: none) and (pointer: coarse) {
+  .visual-card.is-landscape-player { z-index: 40; overflow: visible; }
+  .visual-card.is-landscape-player .visual-player { position: fixed; z-index: 40; width: 100%; height: 100vh; height: 100dvh; border-radius: 0; background: var(--navy-deep); }
+  .is-landscape-player .video-exit-immersive { display: block; }
+  .is-landscape-player .video-rotate-hint { display: none; }
+  .visual-card.is-landscape-player .visual-player:fullscreen .video-exit-immersive { display: none; }
+}
 .visual-stats { position: absolute; top: 50px; right: 55px; display: flex; gap: 32px; }
 .visual-stats span { font-size: 12px; color: rgba(255,255,255,.75); }
 .visual-stats strong { display: block; color: var(--white); font: 800 30px "Manrope", sans-serif; }
@@ -165,7 +185,7 @@ h3 { line-height: 1.2; }
 .gallery-feature img { object-position: 50% 58%; }
 
 .destinations-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-.destination-card { position: relative; flex: 0 1 calc((100% - 48px) / 4); min-width: 0; min-height: 390px; overflow: hidden; border-radius: 14px; background-size: cover; background-position: center; color: var(--white); transition: transform .3s; }
+.destination-card { position: relative; flex: 0 1 calc((100% - 32px) / 3); min-width: 0; min-height: 390px; overflow: hidden; border-radius: 14px; background-size: cover; background-position: center; color: var(--white); transition: transform .3s; }
 .destination-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(3,30,51,.86), transparent 62%); }
 .destination-card:hover { transform: translateY(-7px); }
 .destination-card div { position: absolute; z-index: 2; left: 22px; right: 22px; bottom: 22px; }
@@ -284,6 +304,16 @@ h3 { line-height: 1.2; }
 .trust-strip.reveal.visible { transform: translate(-50%, 0); }
 .delay-1 { transition-delay: .1s; }.delay-2 { transition-delay: .2s; }.delay-3 { transition-delay: .3s; }
 
+/* Keep the compact-screen expansion state while showing every tour on wide desktops. */
+@media (min-width: 1280px) {
+  #passeios > .container { width: min(1320px, calc(100% - 48px)); }
+  .tours-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tours-grid .additional-tours { display: contents; }
+  .tours-grid .additional-tour { opacity: 1; transform: none; transition-delay: 0s; }
+  .tours-grid .additional-tour:hover { transform: translateY(-8px); }
+  #passeios > .center-action { display: none; }
+}
+
 @media (max-width: 1050px) {
   .navbar { grid-template-columns: 1fr auto; }
   .menu-toggle { display: block; justify-self: end; z-index: 2; }
@@ -352,7 +382,7 @@ h3 { line-height: 1.2; }
   .visual-card { width: calc(100% - 32px); min-height: 620px; }
   .visual-copy { left: 24px; right: 24px; bottom: 35px; }
   .visual-stats { top: 25px; left: 25px; right: auto; }
-  .play-button { top: 38%; }
+  .play-button { top: 50%; }
   .gallery-heading { align-items: flex-start; flex-direction: column; gap: 25px; }
   .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 300px 220px 220px auto; overflow: hidden; }
   .gallery-tall { grid-column: 1 / 3; grid-row: 1; }
