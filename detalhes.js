@@ -13,7 +13,12 @@ const tours = {
     duration: 'Aprox. 7 horas',
     price: 'R$ 150 / pessoa',
     fares: createPassengerFares(150),
-    description: 'Um roteiro pelo litoral sul da Paraíba para conhecer praias, falésias e paisagens que fazem parte da experiência de João Pessoa. A programação e os pontos visitados são confirmados pela equipe antes da reserva.',
+    description: 'Conheça quatro destinos incríveis do litoral sul da Paraíba em um passeio repleto de belas paisagens e praias encantadoras. A experiência começa na Barra de Gramame e segue pela Praia do Amor, Tambaba e Coqueirinho, proporcionando momentos de lazer, contato com a natureza e cenários perfeitos para fotos.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.'
+    ],
     images: ['assets/litoral sul.png', 'assets/praia do amor.jpg', 'assets/litoral sul2.webp', 'assets/gramame.webp']
   },
   'litoral-norte-completo': {
@@ -23,8 +28,13 @@ const tours = {
     duration: 'Aprox. 7 horas',
     price: 'R$ 200 / pessoa',
     fares: createPassengerFares(200),
-    description: 'Um passeio pelo litoral norte para aproveitar diferentes paisagens costeiras e conhecer pontos do roteiro local. A sequência de visitas e os horários são confirmados antes da reserva.',
-    images: ['assets/img fortaleza.jpeg', 'assets/litoral norte4.jpeg', 'assets/jacaré.jpeg', 'assets/norte5.jpeg', 'assets/norte6.png']
+    description: 'Explore as belezas do litoral norte da Paraíba em um roteiro completo, repleto de história, paisagens encantadoras e experiências inesquecíveis. Conheça a famosa Areia Vermelha, o Dique de Cabedelo, Ponta de Campina e a Fortaleza de Santa Catarina. Para finalizar, desfrute de um lindo pôr do sol na Praia do Jacaré, ao som do tradicional Bolero de Ravel.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.'
+    ],
+    images: ['assets/jacaré.jpeg', 'assets/litoral norte4.jpeg', 'assets/norte5.jpeg', 'assets/norte6.png']
   },
   'piscinas-naturais-seixas': {
     name: 'Piscinas Naturais do Seixas',
@@ -33,7 +43,12 @@ const tours = {
     duration: 'Aprox. 3 horas',
     price: 'R$ 100 / pessoa',
     fares: createPassengerFares(100),
-    description: 'Uma experiência nas Piscinas Naturais do Seixas, com águas cristalinas e contato próximo com o mar paraibano. A realização depende da maré, das condições climáticas e da operação dos parceiros.',
+    description: 'Descubra as encantadoras piscinas naturais do Seixas, um dos cenários mais bonitos do litoral paraibano. Durante o passeio de catamarã, você poderá contemplar águas cristalinas, observar a vida marinha e aproveitar momentos de lazer em meio à beleza do mar.',
+    inclusions: [
+      'Passeio de catamarã.',
+      'Acesso ao toboágua.',
+      'Experiência nas piscinas naturais.'
+    ],
     images: ['assets/seixas 2.jpg', 'assets/seixas 1.png', 'assets/seixas.png', 'assets/seixas 5.jpeg', 'assets/seixas 6.jpeg']
   },
   'buggy-litoral-sul': {
@@ -44,8 +59,15 @@ const tours = {
     price: 'R$ 650 / buggy',
     fixedPrice: 650,
     capacity: 4,
-    description: 'Passeio de buggy pelo litoral sul da Paraíba, combinando aventura e paisagens costeiras. O roteiro, os horários e as orientações são confirmados pela equipe antes da reserva.',
-    images: ['assets/visual buggy.jpeg', 'assets/buggy norte 2.jpg', 'assets/buggy norte.jpeg']
+    description: 'Viva uma experiência inesquecível explorando as belezas do litoral sul da Paraíba a bordo de um buggy privativo! Conheça praias paradisíacas, falésias, mirantes e paisagens incríveis, com liberdade para aproveitar cada parada e registrar momentos especiais. Um passeio exclusivo, ideal para casais, famílias e grupos que desejam conhecer o litoral de uma maneira diferente e emocionante.',
+    inclusions: [
+      'Buggy privativo.',
+      'Bugueiro experiente.',
+      'Roteiro pelas praias e paisagens do litoral sul.',
+      'Paradas para fotos e contemplação das paisagens.',
+      'Experiência exclusiva para você e seu grupo.'
+    ],
+    images: ['assets/visual buggy.jpeg', 'assets/p4.jpeg', 'assets/buggy norte.jpeg']
   },
   'piscinas-naturais-picaozinho': {
     name: 'Piscinas Naturais de Picãozinho',
@@ -54,7 +76,12 @@ const tours = {
     duration: null,
     price: null,
     fares: createPassengerFares(100),
-    description: 'Conheça as Piscinas Naturais de Picãozinho em uma experiência no litoral de João Pessoa. A disponibilidade, o roteiro, os horários e as orientações são confirmados pela equipe durante o atendimento.',
+    description: 'Conheça as famosas piscinas naturais de Picãozinho, um verdadeiro paraíso localizado próximo à orla de João Pessoa. Aproveite as águas claras, os recifes de corais e a oportunidade de observar peixinhos em um ambiente encantador, ideal para relaxar e viver uma experiência especial no mar.',
+    inclusions: [
+      'Passeio de embarcação.',
+      'Visita às piscinas naturais.',
+      'Experiência de contato com a vida marinha, conforme as condições da maré.'
+    ],
     images: ['assets/img 1.jpeg', 'assets/img 2.jpeg']
   },
   'city-tour-joao-pessoa': {
@@ -64,7 +91,13 @@ const tours = {
     duration: 'Meio período',
     price: 'R$ 100 / pessoa',
     fares: createPassengerFares(100),
-    description: 'Um roteiro cultural por João Pessoa para conhecer diferentes pontos da cidade e aproveitar melhor o período do passeio. Os locais visitados e os horários são confirmados antes da reserva.',
+    description: 'Descubra a história, a cultura e os encantos de João Pessoa em um passeio pelos principais pontos turísticos da capital paraibana. Conheça o famoso Farol do Cabo Branco, admire as belezas do litoral e explore o Centro Histórico, com suas construções antigas e monumentos marcantes. Uma experiência ideal para conhecer melhor a cidade, apreciar suas paisagens e registrar momentos especiais.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.',
+      'Visita aos principais pontos turísticos de João Pessoa.'
+    ],
     images: ['assets/city1.jpeg', 'assets/city2.jpg', 'assets/city.jpg', 'assets/city 3.jpeg', 'assets/city 4.jpeg', 'assets/city 5.jpeg', 'assets/city 6.jpeg', 'assets/city 7.jpeg']
   },
   'litoral-sul-2': {
@@ -74,7 +107,12 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 150',
     fares: createPassengerFares(150),
-    description: 'Praias tranquilas, falésias, mirantes e o encontro do rio com o mar.',
+    description: 'Conheça três destinos incríveis do litoral sul da Paraíba em um passeio repleto de paisagens paradisíacas e belezas naturais. O roteiro passa por Carapibus, Tabatinga e Praia Bela, proporcionando momentos de lazer, contato com a natureza e cenários encantadores para aproveitar e registrar fotos inesquecíveis.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.'
+    ],
     images: ['assets/sul 2.webp', 'assets/carapibus.png', 'assets/sul 4.jpg']
   },
   'areia-vermelha': {
@@ -84,7 +122,12 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 100',
     fares: createPassengerFares(100),
-    description: 'Banco de areia com piscinas naturais de águas cristalinas na maré baixa.',
+    description: 'Conheça a famosa Ilha de Areia Vermelha, um banco de areia que surge em meio ao mar durante a maré baixa, formando um cenário paradisíaco de águas mornas e cristalinas. Aproveite para relaxar, contemplar a paisagem e viver uma experiência inesquecível em um dos destinos mais conhecidos do litoral paraibano.',
+    inclusions: [
+      'Passeio de embarcação.',
+      'Travessia até Areia Vermelha.',
+      'Tempo para aproveitar o banco de areia, conforme as condições da maré.'
+    ],
     images: ['assets/vermelha1.png', 'assets/areia vermelha 1.jpeg', 'assets/areia vermelha 2.jpeg', 'assets/areia vermelha 3.jpeg']
   },
   'cabaceiras-roliude': {
@@ -94,7 +137,13 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 300',
     fares: createPassengerFares(300),
-    description: 'Cenários de cinema, construções históricas e a cultura do Cariri Paraibano.',
+    description: 'Conheça Cabaceiras, na Paraíba, famosa como a Roliúde Nordestina por ter sido cenário de grandes produções do cinema brasileiro. Explore a cultura e admire as paisagens marcantes do Cariri paraibano e descubra lugares cheios de história, tradição e beleza. Uma experiência única para conhecer as raízes nordestinas, visitar cenários cinematográficos e registrar momentos inesquecíveis com o Imperador do Turismo!',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.',
+      'Visita aos principais atrativos turísticos de Cabaceiras.'
+    ],
     images: ['assets/cabaceiras4.jpeg', 'assets/cabaceiras.jpeg', 'assets/cabaceiras2.jpeg', 'assets/cabaceiras3.jpeg', 'assets/roli2.jpg', 'assets/roli3.jpg']
   },
   'recife-olinda': {
@@ -104,7 +153,13 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 160',
     fares: createPassengerFares(160),
-    description: 'Duas cidades históricas do Nordeste em um único dia de passeio.',
+    description: 'Explore a história, a cultura e os encantos de Pernambuco em um passeio por duas cidades cheias de tradição. Em Recife, conheça belas paisagens, monumentos históricos e pontos marcantes da capital pernambucana. Em Olinda, encante-se com as ladeiras históricas, as igrejas seculares, a arquitetura colonial e as vistas incríveis. Uma experiência perfeita para conhecer novos lugares, mergulhar na cultura nordestina e guardar recordações especiais.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.',
+      'Visita aos principais pontos turísticos de Recife e Olinda.'
+    ],
     images: ['assets/recife1.jpeg', 'assets/recife2.jpg', 'assets/recife3.jpg']
   },
   'porto-de-galinhas': {
@@ -114,7 +169,13 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 160',
     fares: createPassengerFares(160),
-    description: 'Águas cristalinas, piscinas naturais e praias paradisíacas.',
+    description: 'Conheça Porto de Galinhas, um dos destinos mais encantadores do litoral pernambucano! Desfrute de praias paradisíacas, águas cristalinas e paisagens incríveis, perfeitas para relaxar, tirar fotos e viver momentos inesquecíveis. Aproveite o dia para explorar esse paraíso nordestino e se encantar com suas belezas naturais em uma experiência especial com o Imperador do Turismo.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.',
+      'Visita ao destino Porto de Galinhas.'
+    ],
     images: ['assets/porto1.jpg', 'assets/porto2.webp', 'assets/porto3.webp']
   },
   'pipa': {
@@ -124,7 +185,13 @@ const tours = {
     duration: 'Consulte a equipe',
     price: 'R$ 160',
     fares: createPassengerFares(160),
-    description: 'Falésias, mirantes e mar azul no Rio Grande do Norte.',
+    description: 'Descubra as belezas da Praia da Pipa, um dos destinos mais encantadores do litoral potiguar! Admire falésias coloridas, praias paradisíacas e paisagens deslumbrantes que tornam esse lugar tão especial. Aproveite para explorar o charme da região, tirar fotos incríveis e viver momentos inesquecíveis em meio à natureza. Uma experiência perfeita para quem deseja conhecer um dos paraísos mais famosos do Nordeste com o Imperador do Turismo.',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.',
+      'Visita aos principais atrativos da região de Pipa.'
+    ],
     images: ['assets/pipa1.webp', 'assets/pipa2.avif', 'assets/pipa3.jpeg']
   },
   natal: {
@@ -134,7 +201,13 @@ const tours = {
     duration: 'Dia inteiro',
     price: 'R$ 160 / pessoa',
     fares: createPassengerFares(160),
-    description: 'Conheça alguns dos principais cenários e atrações da capital potiguar.',
+    description: 'Explore os encantos de Natal, a capital potiguar, conhecida por suas dunas impressionantes, praias paradisíacas e paisagens de tirar o fôlego. Descubra as belezas do litoral, conheça os principais pontos turísticos da região e aproveite momentos especiais em um dos destinos mais famosos do Nordeste. Uma experiência repleta de natureza, cultura e cenários incríveis para registrar recordações inesquecíveis com o Imperador do Turismo!',
+    inclusions: [
+      'Guia turístico credenciado.',
+      'Translado de ida e volta.',
+      'Busca no local de hospedagem do cliente.',
+      'Visita aos principais atrativos turísticos de Natal.'
+    ],
     images: ['assets/natal.jpg', 'assets/natal2.png', 'assets/natal3.jpg']
   }
 };
@@ -162,6 +235,19 @@ document.title = `${tour.name} | Imperador do Turismo`;
 setText('#tour-category', tour.category);
 setText('#tour-name', tour.name);
 setText('#tour-description', tour.description);
+
+const inclusionsList = document.querySelector('#tour-inclusions');
+inclusionsList.replaceChildren(...tour.inclusions.map((inclusion) => {
+  const item = document.createElement('li');
+  const check = document.createElement('span');
+  check.className = 'tour-inclusion-check';
+  check.setAttribute('aria-hidden', 'true');
+  check.textContent = '✓';
+  const text = document.createElement('span');
+  text.textContent = inclusion;
+  item.append(check, text);
+  return item;
+}));
 
 const bookingShortcut = document.querySelector('.booking-shortcut');
 const bookingPanel = document.querySelector('#booking-panel');
