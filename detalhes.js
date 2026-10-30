@@ -34,7 +34,7 @@ const tours = {
       'Translado de ida e volta.',
       'Busca no local de hospedagem do cliente.'
     ],
-    images: ['assets/jacaré.jpeg', 'assets/litoral norte4.jpeg', 'assets/norte5.jpeg', 'assets/norte6.png']
+    images: ['assets/jacaré.jpeg', 'assets/litoral norte4.jpeg', 'assets/norte5.jpeg', 'assets/img fortaleza.jpeg', 'assets/norte6.png']
   },
   'piscinas-naturais-seixas': {
     name: 'Piscinas Naturais do Seixas',
