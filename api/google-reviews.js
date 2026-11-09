@@ -186,19 +186,41 @@ module.exports = async function handler(request, response) {
 
     const reviewsData = await requestGoogleReviews(reviewsUrl, accessToken);
 
-    const reviews = Array.isArray(reviewsData.reviews)
-      ? reviewsData.reviews
-          .filter((review) => typeof review.comment === 'string' && review.comment.trim())
-          .slice(0, 3)
-          .map((review) => ({
-            displayName: review.reviewer?.displayName || 'Cliente do Google',
-            profilePhotoUrl: publicUrlOrNull(review.reviewer?.profilePhotoUrl),
-            starRating: STAR_RATINGS[review.starRating] || null,
-            comment: review.comment.trim(),
-            createTime: review.createTime || null,
-            reviewReplyUrl: publicUrlOrNull(review.reviewReplyUrl)
-          }))
-      : [];
+    // Continue only until nine genuine comments are found. Keep Google's aggregate
+    // figures from the first page, including reviews without a comment.
+    const commentedReviews = [];
+    const seenReviews = new Set();
+    const seenPageTokens = new Set();
+    let page = reviewsData;
+
+    while (true) {
+      for (const review of Array.isArray(page.reviews) ? page.reviews : []) {
+        if (typeof review.comment !== 'string' || !review.comment.trim()) continue;
+        const key = review.reviewId || JSON.stringify([
+          review.reviewer?.displayName, review.createTime, review.comment
+        ]);
+        if (seenReviews.has(key)) continue;
+        seenReviews.add(key);
+        commentedReviews.push(review);
+        if (commentedReviews.length === 9) break;
+      }
+
+      const nextPageToken = page.nextPageToken;
+      if (commentedReviews.length === 9 || !nextPageToken || seenPageTokens.has(nextPageToken)) break;
+      seenPageTokens.add(nextPageToken);
+      page = await requestGoogleReviews(
+        `${reviewsUrl}&pageToken=${encodeURIComponent(nextPageToken)}`, accessToken
+      );
+    }
+
+    const reviews = commentedReviews.map((review) => ({
+      displayName: review.reviewer?.displayName || 'Cliente do Google',
+      profilePhotoUrl: publicUrlOrNull(review.reviewer?.profilePhotoUrl),
+      starRating: STAR_RATINGS[review.starRating] || null,
+      comment: review.comment.trim(),
+      createTime: review.createTime || null,
+      reviewReplyUrl: publicUrlOrNull(review.reviewReplyUrl)
+    }));
 
     const payload = {
       averageRating: Number(reviewsData.averageRating) || 0,

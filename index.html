@@ -183,18 +183,27 @@
         <div class="container testimonial-layout">
           <div class="testimonial-intro reveal">
             <p class="eyebrow blue">Depoimentos</p>
-            <h2>Veja o que dizem nossos viajantes.</h2>
+            <h2 id="reviews-title">Veja o que dizem nossos viajantes.</h2>
             <div class="testimonial-rating" data-reviews-summary aria-label="Avaliações do Google temporariamente indisponíveis">
               <strong data-average-rating>—</strong>
               <div><span data-average-stars aria-hidden="true">☆☆☆☆☆</span><small data-total-reviews>Avaliações no Google</small></div>
             </div>
           </div>
-          <div class="quotes-grid reviews-loading" data-reviews-list aria-busy="true">
-            <span class="reviews-status">Carregando avaliações do Google</span>
-            <article class="quote-card review-placeholder" aria-hidden="true"><div></div></article>
-            <article class="quote-card featured-quote review-placeholder" aria-hidden="true"><div></div></article>
-            <article class="quote-card review-placeholder" aria-hidden="true"><div></div></article>
+          <div class="reviews-panel" data-reviews-panel>
+            <div class="quotes-grid reviews-loading" data-reviews-list aria-busy="true" role="region" aria-labelledby="reviews-title">
+              <p class="reviews-status" role="status">Carregando avaliações do Google</p>
+              <article class="quote-card review-placeholder" aria-hidden="true"><div></div></article>
+              <article class="quote-card featured-quote review-placeholder" aria-hidden="true"><div></div></article>
+              <article class="quote-card review-placeholder" aria-hidden="true"><div></div></article>
+            </div>
           </div>
+          <dialog class="reviews-dialog" data-reviews-dialog aria-labelledby="reviews-dialog-title">
+            <div class="reviews-dialog-heading">
+              <h3 id="reviews-dialog-title">Avaliações dos nossos viajantes</h3>
+              <form method="dialog"><button type="submit" aria-label="Fechar avaliações" autofocus>×</button></form>
+            </div>
+            <div data-reviews-full></div>
+          </dialog>
         </div>
       </section>
 
