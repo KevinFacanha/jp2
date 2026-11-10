@@ -355,7 +355,7 @@ const syncReviewsMotion = () => {
     reviewsMobileCarousel.timer = null;
     if (moving && !reviewsMobileCarousel.animations.length) {
       // Start the reading interval only after the previous card has settled.
-      reviewsMobileCarousel.timer = setTimeout(advanceMobileReview, 6000);
+      reviewsMobileCarousel.timer = setTimeout(advanceMobileReview, 3000);
     }
   }
 };
