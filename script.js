@@ -337,6 +337,16 @@ let reviewsHovered = false;
 let reviewsInteracting = false;
 let reviewsLayoutFrame;
 let reviewsMobileCarousel;
+let reviewsSnapshot = null;
+let reviewsSummarySnapshot = null;
+const REVIEWS_REFRESH_INTERVAL = 5 * 60 * 1000;
+let reviewsRefreshTimer;
+let reviewsRequest = null;
+let reviewsNextCheckAt = 0;
+let reviewsPollingSuspended = false;
+
+const reviewIdentity = (review) => review?.reviewId ||
+  JSON.stringify([review?.displayName, review?.createTime]);
 
 const reviewsCanMove = () => loadedGoogleReviews.length > 1 && reviewsInView &&
   !document.hidden && !reviewsReducedMotion.matches &&
@@ -459,8 +469,18 @@ const setupMobileReviews = (track, initialIndex) => {
   settleMobileReview(reviewsMobileCarousel, initialIndex);
 };
 
-const buildReviewsLayout = () => {
-  const mobileIndex = reviewsMobileCarousel?.index || 0;
+const buildReviewsLayout = (preferredMobileIndex = reviewsMobileCarousel?.index || 0, preferredFocusedReview = null) => {
+  const mobileIndex = preferredMobileIndex;
+  // Keep the progress of the existing CSS animations when content or sizing
+  // requires a rebuild. Unchanged API data never calls this function.
+  const animationProgress = Array.from(reviewsList.querySelectorAll('.reviews-column-track'), (track) => {
+    const animation = track.getAnimations?.()[0];
+    const duration = animation?.effect?.getComputedTiming().duration;
+    return animation && Number.isFinite(duration) && duration > 0 ? animation.currentTime / duration : null;
+  });
+  const focusedCard = document.activeElement?.closest('[data-review-index]');
+  const focusedReview = preferredFocusedReview || (focusedCard && reviewsPanel.contains(focusedCard) ?
+    reviewIdentity(loadedGoogleReviews[Number(focusedCard.dataset.reviewIndex)]) : null);
   if (reviewsMobileCarousel) {
     clearTimeout(reviewsMobileCarousel.timer);
     reviewsMobileCarousel.animations.forEach((animation) => {
@@ -526,49 +546,128 @@ const buildReviewsLayout = () => {
       });
     }
   }
+  reviewsList.querySelectorAll('.reviews-column-track').forEach((track, index) => {
+    const progress = animationProgress[index];
+    if (!Number.isFinite(progress)) return;
+    const animation = track.getAnimations?.()[0];
+    const duration = animation?.effect?.getComputedTiming().duration;
+    if (animation && Number.isFinite(duration)) animation.currentTime = progress * duration;
+  });
+  if (focusedReview) {
+    const index = loadedGoogleReviews.findIndex((review) => reviewIdentity(review) === focusedReview);
+    const button = reviewsList.querySelector(`[data-review-index="${index}"]:not([data-review-copy]) .review-expand`);
+    if (button && !button.hidden) button.focus({ preventScroll: true });
+    else reviewsList.focus({ preventScroll: true });
+  }
   syncReviewsMotion();
 };
 
 const renderGoogleReviews = (data) => {
-  const averageRating = Number(data.averageRating);
-  const totalReviewCount = Number(data.totalReviewCount);
-  const reviews = Array.isArray(data.reviews) ? data.reviews.filter((review) =>
-    typeof review.comment === 'string' && originalReviewComment(review.comment)).slice(0, 9) : [];
-
-  if (!Number.isFinite(averageRating) || averageRating < 0 || averageRating > 5 ||
+  const averageRating = data?.averageRating;
+  const totalReviewCount = data?.totalReviewCount;
+  if (!Array.isArray(data?.reviews) || !Number.isFinite(averageRating) || averageRating < 0 || averageRating > 5 ||
       !Number.isInteger(totalReviewCount) || totalReviewCount < 0) {
     throw new Error('Invalid reviews response');
   }
-  const ratingLabel = `${formatRating(averageRating)} de 5 estrelas. ${formatReviewCount(totalReviewCount)}`;
-  const averageStars = formatStars(averageRating);
-  googleReviewsHero.querySelector('[data-google-rating-stars]').textContent = `${formatRating(averageRating)} ${averageStars}`;
-  googleReviewsHero.querySelector('[data-google-reviews-label]').textContent = formatReviewCount(totalReviewCount);
-  googleReviewsHero.setAttribute('aria-label', ratingLabel);
-  reviewsSummary.querySelector('[data-average-rating]').textContent = formatRating(averageRating);
-  reviewsSummary.querySelector('[data-average-stars]').textContent = averageStars;
-  reviewsSummary.querySelector('[data-total-reviews]').textContent = formatReviewCount(totalReviewCount);
-  reviewsSummary.setAttribute('aria-label', ratingLabel);
+  if (data.reviews.some((review) => !review || typeof review.comment !== 'string')) {
+    throw new Error('Invalid review comment');
+  }
+  // Compare only fields used by the interface, in a stable order. Translation
+  // suffixes and unused API metadata must not restart either carousel.
+  const reviews = data.reviews.filter((review) => originalReviewComment(review.comment)).slice(0, 9).map((review) => ({
+    reviewId: typeof review.reviewId === 'string' ? review.reviewId : null,
+    displayName: typeof review.displayName === 'string' && review.displayName ? review.displayName : 'Cliente do Google',
+    profilePhotoUrl: typeof review.profilePhotoUrl === 'string' && review.profilePhotoUrl.startsWith('https://') ? review.profilePhotoUrl : null,
+    starRating: Number.isInteger(review.starRating) && review.starRating >= 1 && review.starRating <= 5 ? review.starRating : null,
+    comment: originalReviewComment(review.comment),
+    createTime: typeof review.createTime === 'string' ? review.createTime : null
+  }));
+  const summarySnapshot = JSON.stringify([averageRating, totalReviewCount]);
+  const snapshot = JSON.stringify(reviews);
+  if (summarySnapshot !== reviewsSummarySnapshot) {
+    const ratingLabel = `${formatRating(averageRating)} de 5 estrelas. ${formatReviewCount(totalReviewCount)}`;
+    const averageStars = formatStars(averageRating);
+    googleReviewsHero.querySelector('[data-google-rating-stars]').textContent = `${formatRating(averageRating)} ${averageStars}`;
+    googleReviewsHero.querySelector('[data-google-reviews-label]').textContent = formatReviewCount(totalReviewCount);
+    googleReviewsHero.setAttribute('aria-label', ratingLabel);
+    reviewsSummary.querySelector('[data-average-rating]').textContent = formatRating(averageRating);
+    reviewsSummary.querySelector('[data-average-stars]').textContent = averageStars;
+    reviewsSummary.querySelector('[data-total-reviews]').textContent = formatReviewCount(totalReviewCount);
+    reviewsSummary.setAttribute('aria-label', ratingLabel);
+    reviewsSummarySnapshot = summarySnapshot;
+  }
+  if (snapshot === reviewsSnapshot) return;
+  const mobileIndex = reviewsMobileCarousel?.index || 0;
+  const currentReview = reviewIdentity(loadedGoogleReviews[mobileIndex]);
+  const updatedIndex = reviews.findIndex((review) => reviewIdentity(review) === currentReview);
+  // Capture keyboard identity before replacing the data referenced by card indexes.
+  const focusedCard = document.activeElement?.closest('[data-review-index]');
+  const focusedReview = focusedCard && reviewsPanel.contains(focusedCard) ?
+    reviewIdentity(loadedGoogleReviews[Number(focusedCard.dataset.reviewIndex)]) : null;
   loadedGoogleReviews = reviews;
+  reviewsSnapshot = snapshot;
   reviewsList.classList.remove('reviews-loading');
   reviewsList.setAttribute('aria-busy', 'false');
-  buildReviewsLayout();
+  buildReviewsLayout(updatedIndex >= 0 ? updatedIndex : mobileIndex, focusedReview);
+  if (reviewsDialog.open) {
+    const scrollTop = reviewsDialog.scrollTop;
+    reviewsFull.replaceChildren(...reviews.map((review, index) => createReviewCard(review, index, { full: true })));
+    reviewsDialog.scrollTop = scrollTop;
+  }
 };
 
-const loadGoogleReviews = async () => {
-  if (!googleReviewsHero || !reviewsSummary || !reviewsList) return;
-  try {
-    const response = await fetch('/api/google-reviews', { headers: { Accept: 'application/json' } });
-    if (!response.ok) throw new Error('Reviews request failed');
-    renderGoogleReviews(await response.json());
-  } catch {
-    reviewsList.classList.remove('reviews-loading');
-    reviewsList.setAttribute('aria-busy', 'false');
-    const status = document.createElement('p');
-    status.className = 'reviews-status';
-    status.setAttribute('role', 'status');
-    status.textContent = 'Avaliações do Google temporariamente indisponíveis.';
-    reviewsList.replaceChildren(status);
+const scheduleGoogleReviews = () => {
+  clearTimeout(reviewsRefreshTimer);
+  reviewsRefreshTimer = null;
+  if (document.hidden || reviewsPollingSuspended || reviewsRequest) return;
+  reviewsRefreshTimer = setTimeout(loadGoogleReviews,
+    Math.min(2147483647, Math.max(0, reviewsNextCheckAt - Date.now())));
+};
+
+const loadGoogleReviews = () => {
+  if (!googleReviewsHero || !reviewsSummary || !reviewsList || document.hidden || reviewsPollingSuspended) return;
+  if (reviewsRequest) return reviewsRequest;
+  if (Date.now() < reviewsNextCheckAt) {
+    scheduleGoogleReviews();
+    return;
   }
+  clearTimeout(reviewsRefreshTimer);
+  reviewsRequest = (async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    let retryAfter = 0;
+    try {
+      const response = await fetch('/api/google-reviews', {
+        headers: { Accept: 'application/json' },
+        signal: controller.signal
+      });
+      if (!response.ok) {
+        const value = response.headers.get('Retry-After');
+        const seconds = value ? Number(value) : NaN;
+        const milliseconds = Number.isFinite(seconds) ? seconds * 1000 : Date.parse(value) - Date.now();
+        if (Number.isFinite(milliseconds)) retryAfter = Math.max(0, milliseconds);
+        throw new Error('Reviews request failed');
+      }
+      renderGoogleReviews(await response.json());
+    } catch {
+      // Keep the last valid summaries, cards and animations for this page session.
+      if (reviewsSnapshot !== null || reviewsList.querySelector('.reviews-status[role="status"]:only-child')) return;
+      reviewsList.classList.remove('reviews-loading');
+      reviewsList.setAttribute('aria-busy', 'false');
+      const status = document.createElement('p');
+      status.className = 'reviews-status';
+      status.setAttribute('role', 'status');
+      status.textContent = 'Avaliações do Google temporariamente indisponíveis.';
+      reviewsList.replaceChildren(status);
+    } finally {
+      clearTimeout(timeout);
+      reviewsNextCheckAt = Date.now() + Math.max(REVIEWS_REFRESH_INTERVAL, retryAfter);
+    }
+  })().finally(() => {
+    reviewsRequest = null;
+    scheduleGoogleReviews();
+  });
+  return reviewsRequest;
 };
 
 if (reviewsPanel) {
@@ -594,6 +693,21 @@ if (reviewsPanel) {
   reviewsPanel.addEventListener('focusin', syncReviewsMotion);
   reviewsPanel.addEventListener('focusout', () => requestAnimationFrame(syncReviewsMotion));
   document.addEventListener('visibilitychange', syncReviewsMotion);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearTimeout(reviewsRefreshTimer);
+      reviewsRefreshTimer = null;
+    } else loadGoogleReviews();
+  });
+  // BFCache restores the same document and its in-memory data, without a new load.
+  window.addEventListener('pagehide', () => {
+    reviewsPollingSuspended = true;
+    clearTimeout(reviewsRefreshTimer);
+  });
+  window.addEventListener('pageshow', () => {
+    reviewsPollingSuspended = false;
+    loadGoogleReviews();
+  });
   const onReviewsMediaChange = () => { if (loadedGoogleReviews.length) buildReviewsLayout(); };
   // addListener supports older Safari installations as well.
   [reviewsMobile, reviewsReducedMotion].forEach((query) => {
