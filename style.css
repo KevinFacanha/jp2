@@ -215,6 +215,9 @@ h3 { line-height: 1.2; }
 .testimonial-layout { display: grid; grid-template-columns: 1fr; gap: 44px; align-items: center; }
 .testimonial-intro { max-width: 650px; margin-inline: auto; text-align: center; }
 .testimonial-intro h2 { font-size: clamp(42px, 4vw, 58px); line-height: 1.03; }
+.reviews-source { max-width: 540px; margin: 20px auto 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.reviews-source a { color: var(--ocean-dark); text-decoration: underline; text-underline-offset: 3px; }
+.reviews-source a:hover { color: var(--navy); }
 .testimonial-rating { display: flex; align-items: center; justify-content: center; gap: 18px; width: fit-content; margin: 28px auto 0; padding-top: 24px; border-top: 1px solid var(--line); text-align: left; }
 .testimonial-rating > strong { font: 800 40px/1 "Manrope", sans-serif; }
 .testimonial-rating span, .quote-rating span { color: #f2a720; letter-spacing: 2px; font-size: 12px; }
@@ -326,7 +329,10 @@ h3 { line-height: 1.2; }
 .footer-col a:hover { color: var(--aqua); }
 .socials { display: flex; gap: 8px; margin-top: 12px; }
 .socials a { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; font-size: 11px; }
-.footer-bottom { display: flex; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.42); font-size: 12px; }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.42); font-size: 12px; }
+.footer-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; }
+.footer-legal a { color: rgba(255,255,255,.58); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px; }
+.footer-legal a:hover, .footer-legal a:focus-visible { color: var(--aqua); text-decoration-color: currentColor; }
 .footer-instagram { display: grid; place-items: center; }
 .footer-instagram svg { width: 20px; height: 20px; }
 
